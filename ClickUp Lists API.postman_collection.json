@@ -1,0 +1,1138 @@
+{
+  "info": {
+    "_postman_id": "abce5e4a-8996-48b0-a217-8cc0d9e6210f",
+    "name": "ClickUp Lists API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55097629",
+    "_collection_link": "https://go.postman.co/collection/55097629-abce5e4a-8996-48b0-a217-8cc0d9e6210f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Lists - Returns 200",
+      "item": [
+        {
+          "name": "Create List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"list_id\", response.id);\r",
+                  "\r",
+                  "pm.test(\"List ID was created\", function () {\r",
+                  "    pm.expect(response.id).to.not.be.null;\r",
+                  "});\r",
+                  "const createListSchema = {\r",
+                  "    type: \"object\",\r",
+                  "    properties: {\r",
+                  "        id: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        name: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        orderindex: {\r",
+                  "            type: [\"string\", \"number\", \"null\"]\r",
+                  "        },\r",
+                  "        content: {\r",
+                  "            type: [\"string\", \"null\"]\r",
+                  "        }\r",
+                  "    },\r",
+                  "    required: [\"id\", \"name\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Create List schema is valid\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(createListSchema);\r",
+                  "});\r",
+                  "pm.test(\"Created list name is correct\", function () {\r",
+                  "    pm.expect(response.name).to.eql(pm.environment.get(\"random_list_name\"));\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const randomName = \"Test List \" + Math.floor(Math.random() * 10000);\r",
+                  "pm.environment.set(\"random_list_name\", randomName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{random_list_name}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/folder/901211322607/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "folder",
+                "901211322607",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Lists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Lists array is returned\", function () {\r",
+                  "    pm.expect(response.lists).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "const schema = {\r",
+                  "    type: \"object\",\r",
+                  "    properties: {\r",
+                  "        lists: {\r",
+                  "            type: \"array\",\r",
+                  "            items: {\r",
+                  "                type: \"object\",\r",
+                  "                properties: {\r",
+                  "                    id: {\r",
+                  "                        type: \"string\"\r",
+                  "                    },\r",
+                  "                    name: {\r",
+                  "                        type: \"string\"\r",
+                  "                    }\r",
+                  "                },\r",
+                  "                required: [\"id\", \"name\"]\r",
+                  "            }\r",
+                  "        }\r",
+                  "    },\r",
+                  "    required: [\"lists\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Response schema is valid\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(schema);\r",
+                  "});\r",
+                  "\r",
+                  "response.lists.forEach(function (list) {\r",
+                  "    console.log(\"List ID:\", list.id);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/folder/901211322607/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "folder",
+                "901211322607",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response body is empty object\", function () {\r",
+                  "    pm.expect(pm.response.json()).to.deep.equal({});\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/list/{{list_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Update List - Returns 200",
+      "item": [
+        {
+          "name": "Create List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"list_id\", response.id);\r",
+                  "\r",
+                  "pm.test(\"List ID was created\", function () {\r",
+                  "    pm.expect(response.id).to.not.be.null;\r",
+                  "});\r",
+                  "const createListSchema = {\r",
+                  "    type: \"object\",\r",
+                  "    properties: {\r",
+                  "        id: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        name: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        orderindex: {\r",
+                  "            type: [\"string\", \"number\", \"null\"]\r",
+                  "        },\r",
+                  "        content: {\r",
+                  "            type: [\"string\", \"null\"]\r",
+                  "        }\r",
+                  "    },\r",
+                  "    required: [\"id\", \"name\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Create List schema is valid\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(createListSchema);\r",
+                  "});\r",
+                  "pm.test(\"Created list name is correct\", function () {\r",
+                  "    pm.expect(response.name).to.eql(pm.environment.get(\"random_list_name\"));\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const randomName = \"Test List \" + Math.floor(Math.random() * 10000);\r",
+                  "pm.environment.set(\"random_list_name\", randomName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{random_list_name}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/folder/901211322607/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "folder",
+                "901211322607",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"List name was updated\", function () {\r",
+                  "    pm.expect(response.name).to.eql(pm.environment.get(\"updated_list_name\"));\r",
+                  "});\r",
+                  "const updateListSchema = {\r",
+                  "    type: \"object\",\r",
+                  "    properties: {\r",
+                  "        id: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        name: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        orderindex: {\r",
+                  "            type: [\"string\", \"number\", \"null\"]\r",
+                  "        },\r",
+                  "        content: {\r",
+                  "            type: [\"string\", \"null\"]\r",
+                  "        },\r",
+                  "        status: {\r",
+                  "            type: [\"object\", \"null\"]\r",
+                  "        },\r",
+                  "        priority: {\r",
+                  "            type: [\"object\", \"null\"]\r",
+                  "        }\r",
+                  "    },\r",
+                  "    required: [\"id\", \"name\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Update List schema is valid\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(updateListSchema);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const randomUpdatedName = \"Updated List \" + Math.floor(Math.random() * 10000);\r",
+                  "pm.environment.set(\"updated_list_name\", randomUpdatedName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{updated_list_name}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/list/{{list_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response body is empty object\", function () {\r",
+                  "    pm.expect(pm.response.json()).to.deep.equal({});\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/list/{{list_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Get List - Returns 200",
+      "item": [
+        {
+          "name": "Create List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"list_id\", response.id);\r",
+                  "\r",
+                  "pm.test(\"List ID was created\", function () {\r",
+                  "    pm.expect(response.id).to.not.be.null;\r",
+                  "});\r",
+                  "const createListSchema = {\r",
+                  "    type: \"object\",\r",
+                  "    properties: {\r",
+                  "        id: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        name: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        orderindex: {\r",
+                  "            type: [\"string\", \"number\", \"null\"]\r",
+                  "        },\r",
+                  "        content: {\r",
+                  "            type: [\"string\", \"null\"]\r",
+                  "        }\r",
+                  "    },\r",
+                  "    required: [\"id\", \"name\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Create List schema is valid\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(createListSchema);\r",
+                  "});\r",
+                  "pm.test(\"Created list name is correct\", function () {\r",
+                  "    pm.expect(response.name).to.eql(pm.environment.get(\"random_list_name\"));\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const randomName = \"Test List \" + Math.floor(Math.random() * 10000);\r",
+                  "pm.environment.set(\"random_list_name\", randomName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{random_list_name}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/folder/901211322607/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "folder",
+                "901211322607",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Correct list returned\", function () {\r",
+                  "    pm.expect(response.id).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "const getListSchema = {\r",
+                  "    type: \"object\",\r",
+                  "    properties: {\r",
+                  "        id: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        name: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        orderindex: {\r",
+                  "            type: [\"string\", \"number\", \"null\"]\r",
+                  "        },\r",
+                  "        content: {\r",
+                  "            type: [\"string\", \"null\"]\r",
+                  "        }\r",
+                  "    },\r",
+                  "    required: [\"id\", \"name\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Get List schema is valid\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(getListSchema);\r",
+                  "});\r",
+                  "\r",
+                  "let listId = pm.environment.get(\"list_id\");\r",
+                  "\r",
+                  "if (listId) {\r",
+                  "    pm.sendRequest({\r",
+                  "        url: \"https://api.clickup.com/api/v2/list/\" + listId,\r",
+                  "        method: \"DELETE\",\r",
+                  "        header: {\r",
+                  "            \"Authorization\": pm.environment.get(\"token\"),\r",
+                  "            \"Content-Type\": \"application/json\"\r",
+                  "        }\r",
+                  "    }, function (err, res) {\r",
+                  "\r",
+                  "        if (err) {\r",
+                  "            console.log(\"Error while deleting list:\", err);\r",
+                  "            return;\r",
+                  "        }\r",
+                  "\r",
+                  "        console.log(\"Deleted list ID:\", listId);\r",
+                  "        pm.environment.unset(\"list_id\");\r",
+                  "    });\r",
+                  "} else {\r",
+                  "    console.log(\"list_id is empty, delete request was skipped\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({\r",
+                  "    url: \"https://api.clickup.com/api/v2/folder/901211322607/list\",\r",
+                  "    method: \"POST\",\r",
+                  "    header: {\r",
+                  "        \"Authorization\": pm.environment.get(\"token\"),\r",
+                  "        \"Content-Type\": \"application/json\"\r",
+                  "    },\r",
+                  "    body: {\r",
+                  "        mode: \"raw\",\r",
+                  "        raw: JSON.stringify({\r",
+                  "            name: \"List from pre-request \" + Date.now()\r",
+                  "        })\r",
+                  "    }\r",
+                  "}, function (err, res) {\r",
+                  "    if (err) {\r",
+                  "        console.log(\"Error while creating list:\", err);\r",
+                  "        return;\r",
+                  "    }\r",
+                  "\r",
+                  "    console.log(\"Create list status:\", res.code);\r",
+                  "    console.log(\"Create list body:\", res.text());\r",
+                  "\r",
+                  "    if (res.code === 200) {\r",
+                  "        let response = res.json();\r",
+                  "\r",
+                  "        pm.environment.set(\"list_id\", response.id);\r",
+                  "\r",
+                  "        console.log(\"Created list ID:\", response.id);\r",
+                  "    } else {\r",
+                  "        console.log(\"List was not created\");\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/list/{{list_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response body is empty object\", function () {\r",
+                  "    pm.expect(pm.response.json()).to.deep.equal({});\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/list/{{list_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delete List - Returns 200",
+      "item": [
+        {
+          "name": "Create List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"list_id\", response.id);\r",
+                  "\r",
+                  "pm.test(\"List ID was created\", function () {\r",
+                  "    pm.expect(response.id).to.not.be.null;\r",
+                  "});\r",
+                  "const createListSchema = {\r",
+                  "    type: \"object\",\r",
+                  "    properties: {\r",
+                  "        id: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        name: {\r",
+                  "            type: \"string\"\r",
+                  "        },\r",
+                  "        orderindex: {\r",
+                  "            type: [\"string\", \"number\", \"null\"]\r",
+                  "        },\r",
+                  "        content: {\r",
+                  "            type: [\"string\", \"null\"]\r",
+                  "        }\r",
+                  "    },\r",
+                  "    required: [\"id\", \"name\"]\r",
+                  "};\r",
+                  "\r",
+                  "pm.test(\"Create List schema is valid\", function () {\r",
+                  "    pm.response.to.have.jsonSchema(createListSchema);\r",
+                  "});\r",
+                  "pm.test(\"Created list name is correct\", function () {\r",
+                  "    pm.expect(response.name).to.eql(pm.environment.get(\"random_list_name\"));\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const randomName = \"Test List \" + Math.floor(Math.random() * 10000);\r",
+                  "pm.environment.set(\"random_list_name\", randomName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{random_list_name}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/folder/901211322607/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "folder",
+                "901211322607",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response body is empty object\", function () {\r",
+                  "    pm.expect(pm.response.json()).to.deep.equal({});\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/list/{{list_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deleted List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"List is really deleted\", function () {\r",
+                  "    pm.expect(response.deleted).to.eql(true);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "pk_302431133_BK1YCW2R158P66GBPPNAO55R5VCFXKV9",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/list/{{list_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "Get List without Authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Request without token returns authorization error\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 401]);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/list/123456",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "list",
+                "123456"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "folder_id",
+      "value": ""
+    },
+    {
+      "key": "list_id",
+      "value": ""
+    }
+  ]
+}
